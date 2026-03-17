@@ -26,35 +26,35 @@ export const useWeather = () => {
         }
     }
 
-    const fetchWeatherByLocation = () => {
-        if (!navigator.geolocation) {
-            setError("Geolocation is not supported by this browser.");
-        }
+    // const fetchWeatherByLocation = () => {
+    //     if (!navigator.geolocation) {
+    //         setError("Geolocation is not supported by this browser.");
+    //     }
 
-        setLoading(true);
-        setError(null);
+    //     setLoading(true);
+    //     setError(null);
 
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            try {
-                const { latitude, longitude } = position.coords;
-                const weathreData = await getCurrentWeatherByCoords(latitude, longitude);
-                setCurrentWeather(weathreData);
+    //     navigator.geolocation.getCurrentPosition(async (position) => {
+    //         try {
+    //             const { latitude, longitude } = position.coords;
+    //             const weathreData = await getCurrentWeatherByCoords(latitude, longitude);
+    //             setCurrentWeather(weathreData);
 
-                // als fetch forecast for the current location
-                const forecastData = await getWeatherForecast(weathreData.name);
-                setForeCast(forecastData);
+    //             // als fetch forecast for the current location
+    //             const forecastData = await getWeatherForecast(weathreData.name);
+    //             setForeCast(forecastData);
 
-            } catch (error) {
-                setError(error instanceof Error ? error.message : "Failed to fetch weather data.")
-            } finally {
-                setLoading(false);
-            }
-        }, (error) => {
-            setError("unable to retreive your location");
-            setLoading(false);
-        })
+    //         } catch (error) {
+    //             setError(error instanceof Error ? error.message : "Failed to fetch weather data.")
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     }, (error) => {
+    //         setError("unable to retreive your location");
+    //         setLoading(false);
+    //     })
 
-    }
+    // }
 
     const toggleUnit = () => {
         setUnits(unit === 'C' ? 'F' : 'C')
