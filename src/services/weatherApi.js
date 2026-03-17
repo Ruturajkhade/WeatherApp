@@ -96,11 +96,15 @@ export const searchCities = async (query) => {
         // const response = await fetch(`${BASE_URL}/direct?q=${query}&limit=5&appid=${API_KEY}`);
         const response = await fetch(`${GEO_URL}/direct?q=${query}&limit=5&appid=${API_KEY}`);
 
+        if (response.status === 404) {
+            return []; // no results → not an error
+        }
+
         if (!response.ok) {
             if (response.status === 401) {
-                throw new Error("Invalid API Key, Please check you OpenWeatherMap API configuration");
+                throw new Error("Invalid API Key.");
             } else {
-                throw new Error("Weather service is temporarily unavailable. Please try again later.");
+                throw new Error("Weather service is temporarily unavailable.");
             }
         }
 
@@ -118,7 +122,7 @@ export const searchCities = async (query) => {
 
     } catch (error) {
         if (error instanceof TypeError && error.message.includes('fetch')) {
-            throw new Error("Network error, please check your internet connection and try again.");
+            throw new Error("Network error!");
         }
         throw error;
 
