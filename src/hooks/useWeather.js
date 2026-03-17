@@ -27,43 +27,34 @@ export const useWeather = () => {
     }
 
     const fetchWeatherByLocation = () => {
-    if (!navigator.geolocation) {
-        setError("Geolocation is not supported by this browser.");
-        return;
-    }
+        if (!navigator.geolocation) {
+            setError("Geolocation is not supported by this browser.");
+        }
 
-    setLoading(true);
-    setError(null);
+        setLoading(true);
+        setError(null);
 
-    navigator.geolocation.getCurrentPosition(
-        async (position) => {
+        navigator.geolocation.getCurrentPosition(async (position) => {
             try {
                 const { latitude, longitude } = position.coords;
+                const weathreData = await getCurrentWeatherByCoords(latitude, longitude);
+                setCurrentWeather(weathreData);
 
-                const weatherData = await getCurrentWeatherByCoords(latitude, longitude);
-                setCurrentWeather(weatherData);
-
-                const forecastData = await getWeatherForecastByCoords(latitude, longitude);
+                // als fetch forecast for the current location
+                const forecastData = await getWeatherForecast(weathreData.name);
                 setForeCast(forecastData);
 
             } catch (error) {
-                setError(error instanceof Error ? error.message : "Failed to fetch weather data.");
+                setError(error instanceof Error ? error.message : "Failed to fetch weather data.")
             } finally {
                 setLoading(false);
             }
-        },
-        (error) => {
-            if (error.code === 1) {
-                setError("Location permission denied. Please allow access.");
-            } else if (error.code === 2) {
-                setError("Location unavailable. Try again.");
-            } else {
-                setError("Location request timed out.");
-            }
+        }, (error) => {
+            setError("unable to retreive your location");
             setLoading(false);
-        }
-    );
-};
+        })
+
+    }
 
     const toggleUnit = () => {
         setUnits(unit === 'C' ? 'F' : 'C')
