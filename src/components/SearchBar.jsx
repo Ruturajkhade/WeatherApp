@@ -84,7 +84,7 @@ const SearchBar = ({ onSearch, onLocationSearch, loading }) => {
                             <X className='w-4 h-4' />
                         </button>
                     )}
-                    <button className='absolute right-14 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white transition-all p-1 rounded-full hover:bg-white/10'
+                    <button className='absolute right-4 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white transition-all p-1 rounded-full hover:bg-white/10'
                         onClick={onLocationSearch} disabled={loading}>
                         <MapPin className='w-4 h-4' />
                     </button>

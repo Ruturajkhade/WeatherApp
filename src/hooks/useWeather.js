@@ -12,12 +12,12 @@ export const useWeather = () => {
         setLoading(true);
         setError(null);
         try {
-            const [weathreData, foreCast] = await Promise.all([
+            const [weatherData, foreCast] = await Promise.all([
                 getCurrentWeather(city),
                 getWeatherForecast(city)
             ])
 
-            setCurrentWeather(weathreData);
+            setCurrentWeather(weatherData);
             setForeCast(foreCast);
         } catch (error) {
             setError(error instanceof Error ? error.message : "Failed to fetch weather data.")
@@ -29,6 +29,7 @@ export const useWeather = () => {
     const fetchWeatherByLocation = () => {
         if (!navigator.geolocation) {
             setError("Geolocation is not supported by this browser.");
+            return;
         }
 
         setLoading(true);
@@ -37,11 +38,11 @@ export const useWeather = () => {
         navigator.geolocation.getCurrentPosition(async (position) => {
             try {
                 const { latitude, longitude } = position.coords;
-                const weathreData = await getCurrentWeatherByCoords(latitude, longitude);
-                setCurrentWeather(weathreData);
+                const weatherData = await getCurrentWeatherByCoords(latitude, longitude);
+                setCurrentWeather(weatherData);
 
                 // als fetch forecast for the current location
-                const forecastData = await getWeatherForecast(weathreData.name);
+                const forecastData = await getWeatherForecast(weatherData.name);
                 setForeCast(forecastData);
 
             } catch (error) {
@@ -50,7 +51,18 @@ export const useWeather = () => {
                 setLoading(false);
             }
         }, (error) => {
-            setError("unable to retreive your location");
+            console.log("Geo Error:", error);
+
+            if (error.code === 1) {
+                setError("Location permission denied. Please allow access.");
+            } else if (error.code === 2) {
+                setError("Location unavailable.");
+            } else if (error.code === 3) {
+                setError("Location request timed out.");
+            } else {
+                setError("Unable to retrieve your location.");
+            }
+
             setLoading(false);
         })
 
